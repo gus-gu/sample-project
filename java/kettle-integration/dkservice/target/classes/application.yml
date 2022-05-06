@@ -1,0 +1,7 @@
+server:
+  port: 8088
+
+kettle:
+  trans_path: D://project//kettle-file//
+  pdi_path: D://greensoftware//pdi-ce-9.2.0.0-290//data-integration
+debug: true

@@ -1,0 +1,5 @@
+cn\com\datasolution\config\properties\KettleProperties.class
+cn\com\datasolution\dkservice\controller\KettleController.class
+cn\com\datasolution\dkservice\DKserviceApplication.class
+META-INF\spring-configuration-metadata.json
+cn\com\datasolution\dkservice\pojo\JsonResult.class
