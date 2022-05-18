@@ -1,0 +1,75 @@
+allprojects {
+    apply plugin: 'jacoco'
+    apply plugin: 'org.owasp.dependencycheck'
+    
+    version = '2.12.0-SNAPSHOT'
+    group = 'org.jxls'
+    
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'groovy'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
+    
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    compileJava.options.encoding = 'windows-1252'
+    compileTestJava.options.encoding = 'windows-1252'
+    
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+    
+    if (findProperty('url') != null && findProperty('url') != '') {
+        publishing {
+            publications {
+                artifactory(MavenPublication) {
+                    from components.java
+                }
+            }
+         
+            repositories {
+                maven {
+                    url = findProperty('url')
+                    allowInsecureProtocol = true
+                    credentials {
+                        username findProperty('user')
+                        password findProperty('pass')
+                    }
+                }
+            }
+        }
+    }
+
+    test {
+        doFirst {
+            mkdir 'target'
+        }
+    }
+}
+
+task codeCoverageReport(type: JacocoReport) {
+    // Gather execution data from all subprojects
+    // (change this if you e.g. want to calculate unit test/integration test coverage separately)
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    // Add all relevant sourcesets from the subprojects 
+    subprojects.each {
+       sourceSets it.sourceSets.main
+    }
+
+    reports {
+      xml.enabled true
+    }
+}
+
+// always run the tests before generating the report
+codeCoverageReport.dependsOn {
+    subprojects*.test
+}
